@@ -3,6 +3,7 @@ package pl.com.bottega.ecommerce.sales.domain.invoicing;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.Product;
@@ -44,5 +45,14 @@ public class BookKeeperTest {
     @Test public void invoiceRequestWithOneItemReturnInvoiceWithOnePosition() {
         invoiceRequest.add(requestItem);
         assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(1));
+    }
+
+    @Test public void invoiceRequestWithTwoItemsInvokesCalcualteTaxTwoTimes() {
+        invoiceRequest.add(requestItem);
+        invoiceRequest.add(requestItem);
+
+        bookKeeper.issuance(invoiceRequest, taxPolicyMock);
+
+        assertThat(Mockito.mockingDetails(taxPolicyMock).getInvocations().size(), is(2));
     }
 }
