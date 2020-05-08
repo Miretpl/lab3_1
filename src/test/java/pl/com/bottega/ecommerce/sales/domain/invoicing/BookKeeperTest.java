@@ -11,7 +11,9 @@ import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -70,5 +72,13 @@ public class BookKeeperTest {
         bookKeeper.issuance(invoiceRequest, taxPolicyMock);
 
         assertThat(Mockito.mockingDetails(taxPolicyMock).getInvocations().size(), is(2));
+    }
+
+    @Test public void issuanceInvokeWithNullInvoiceRequestThrowsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> bookKeeper.issuance(null, taxPolicyMock));
+    }
+
+    @Test public void issuanceInvokeWithNullTaxPolicyThrowsNullPointerException() {
+        assertDoesNotThrow(() -> bookKeeper.issuance(invoiceRequest, null));
     }
 }
