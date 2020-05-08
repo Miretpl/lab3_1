@@ -42,11 +42,27 @@ public class BookKeeperTest {
         when(taxPolicyMock.calculateTax(ProductType.STANDARD, Money.ZERO)).thenReturn(new Tax(Money.ZERO, ""));
     }
 
+    // state tests
     @Test public void invoiceRequestWithOneItemReturnInvoiceWithOnePosition() {
         invoiceRequest.add(requestItem);
         assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(1));
     }
 
+    @Test public void invoiceRequestWithNoItemReturnInvoiceWithNoPosition() {
+        assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(0));
+    }
+
+    @Test public void invoiceRequestWithFiveItemReturnInvoiceWithFivePosition() {
+        int itemsQuantity = 5;
+
+        for (int i = 0; i < itemsQuantity; i++) {
+            invoiceRequest.add(requestItem);
+        }
+
+        assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(itemsQuantity));
+    }
+
+    // behaviour tests
     @Test public void invoiceRequestWithTwoItemsInvokesCalcualteTaxTwoTimes() {
         invoiceRequest.add(requestItem);
         invoiceRequest.add(requestItem);
