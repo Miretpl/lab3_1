@@ -24,22 +24,25 @@ public class BookKeeperTest {
 
     private BookKeeper bookKeeper;
     private InvoiceRequest invoiceRequest;
+    private RequestItem requestItem;
+
 
     @Before public void setUp() throws Exception {
         bookKeeper = new BookKeeper(new InvoiceFactory());
         invoiceRequest = new InvoiceRequest(clientDataMock);
+
+        requestItem = new RequestItem(
+                new Product(Id.generate(), Money.ZERO, "", ProductType.STANDARD).generateSnapshot(),
+                1,
+                Money.ZERO
+        );
 
         taxPolicyMock = mock(TaxPolicy.class);
         when(taxPolicyMock.calculateTax(ProductType.STANDARD, Money.ZERO)).thenReturn(new Tax(Money.ZERO, ""));
     }
 
     @Test public void invoiceRequestWithOneItemReturnInvoiceWithOnePosition() {
-        invoiceRequest.add(new RequestItem(
-                new Product(Id.generate(), Money.ZERO, "", ProductType.STANDARD).generateSnapshot(),
-                1,
-                Money.ZERO
-        ));
-
+        invoiceRequest.add(requestItem);
         assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(1));
     }
 }
