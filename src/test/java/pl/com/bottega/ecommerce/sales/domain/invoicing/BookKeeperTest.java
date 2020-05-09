@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.Product;
+import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
@@ -33,11 +34,17 @@ public class BookKeeperTest {
         bookKeeper = new BookKeeper(new InvoiceFactory());
         invoiceRequest = new InvoiceRequest(clientDataMock);
 
-        requestItem = new RequestItem(
-                new ProductDataBuilder().withName("test").withMoney(Money.ZERO).withType(ProductType.STANDARD).build(),
-                1,
-                Money.ZERO
-        );
+        ProductData productData = new ProductDataBuilder()
+                .withName("test")
+                .withMoney(Money.ZERO)
+                .withType(ProductType.STANDARD)
+                .build();
+
+        requestItem = new RequestItemBuilder()
+                .withMoney(Money.ZERO)
+                .withQuantity(1)
+                .withProductData(productData)
+                .build();
 
         taxPolicyMock = mock(TaxPolicy.class);
         when(taxPolicyMock.calculateTax(ProductType.STANDARD, Money.ZERO)).thenReturn(new Tax(Money.ZERO, ""));
