@@ -29,13 +29,12 @@ public class BookKeeperTest {
     private InvoiceRequest invoiceRequest;
     private RequestItem requestItem;
 
-
     @Before public void setUp() throws Exception {
         bookKeeper = new BookKeeper(new InvoiceFactory());
         invoiceRequest = new InvoiceRequest(clientDataMock);
 
         requestItem = new RequestItem(
-                new Product(Id.generate(), Money.ZERO, "", ProductType.STANDARD).generateSnapshot(),
+                new ProductDataBuilder().withName("test").withMoney(Money.ZERO).withType(ProductType.STANDARD).build(),
                 1,
                 Money.ZERO
         );
