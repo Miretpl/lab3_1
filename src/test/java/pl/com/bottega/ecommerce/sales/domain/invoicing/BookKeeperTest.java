@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
-import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
-import pl.com.bottega.ecommerce.sales.domain.productscatalog.Product;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
@@ -27,12 +25,10 @@ public class BookKeeperTest {
     private ClientData clientDataMock;
 
     private BookKeeper bookKeeper;
-    private InvoiceRequest invoiceRequest;
     private RequestItem requestItem;
 
     @Before public void setUp() throws Exception {
         bookKeeper = new BookKeeper(new InvoiceFactory());
-        invoiceRequest = new InvoiceRequest(clientDataMock);
 
         ProductData productData = new ProductDataBuilder()
                 .withName("test")
@@ -52,31 +48,44 @@ public class BookKeeperTest {
 
     // state tests
     @Test public void invoiceRequestWithOneItemReturnInvoiceWithOnePosition() {
-        invoiceRequest.add(requestItem);
+        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
+                .withClientData(clientDataMock)
+                .withRequestItem(requestItem)
+                .withItemQuantity(1)
+                .build();
+
         assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(1));
     }
 
     @Test public void invoiceRequestWithNoItemReturnInvoiceWithNoPosition() {
+        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
+                .withClientData(clientDataMock)
+                .build();
+
         assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(0));
     }
 
     @Test public void invoiceRequestWithFiveItemReturnInvoiceWithFivePosition() {
         int itemsQuantity = 5;
 
-        for (int i = 0; i < itemsQuantity; i++) {
-            invoiceRequest.add(requestItem);
-        }
+        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
+                .withClientData(clientDataMock)
+                .withRequestItem(requestItem)
+                .withItemQuantity(itemsQuantity)
+                .build();
 
         assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(itemsQuantity));
     }
 
     // behaviour tests
     @Test public void invoiceRequestWithTwoItemsInvokesCalcualteTaxTwoTimes() {
-        invoiceRequest.add(requestItem);
-        invoiceRequest.add(requestItem);
+        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
+                .withClientData(clientDataMock)
+                .withRequestItem(requestItem)
+                .withItemQuantity(2)
+                .build();
 
         bookKeeper.issuance(invoiceRequest, taxPolicyMock);
-
         assertThat(Mockito.mockingDetails(taxPolicyMock).getInvocations().size(), is(2));
     }
 
@@ -85,6 +94,10 @@ public class BookKeeperTest {
     }
 
     @Test public void issuanceInvokeWithNullTaxPolicyThrowsNullPointerException() {
+        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
+                .withClientData(clientDataMock)
+                .build();
+
         assertDoesNotThrow(() -> bookKeeper.issuance(invoiceRequest, null));
     }
 }
