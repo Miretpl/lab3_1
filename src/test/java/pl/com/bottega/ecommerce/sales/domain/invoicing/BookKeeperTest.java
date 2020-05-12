@@ -24,8 +24,6 @@ public class BookKeeperTest {
     @Mock
     private TaxPolicy taxPolicyMock;
 
-    private ClientData clientDataMock;
-
     private BookKeeper bookKeeper;
     private RequestItem requestItem;
 
@@ -50,7 +48,6 @@ public class BookKeeperTest {
     // state tests
     @Test public void invoiceRequestWithOneItemReturnInvoiceWithOnePosition() {
         InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
-                .withClientData(clientDataMock)
                 .withRequestItem(requestItem)
                 .withItemQuantity(1)
                 .build();
@@ -60,7 +57,6 @@ public class BookKeeperTest {
 
     @Test public void invoiceRequestWithNoItemReturnInvoiceWithNoPosition() {
         InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
-                .withClientData(clientDataMock)
                 .build();
 
         assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(0));
@@ -70,7 +66,6 @@ public class BookKeeperTest {
         int itemsQuantity = 5;
 
         InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
-                .withClientData(clientDataMock)
                 .withRequestItem(requestItem)
                 .withItemQuantity(itemsQuantity)
                 .build();
@@ -81,7 +76,6 @@ public class BookKeeperTest {
     // behaviour tests
     @Test public void invoiceRequestWithTwoItemsInvokesCalcualteTaxTwoTimes() {
         InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
-                .withClientData(clientDataMock)
                 .withRequestItem(requestItem)
                 .withItemQuantity(2)
                 .build();
@@ -96,7 +90,6 @@ public class BookKeeperTest {
 
     @Test public void issuanceInvokeWithNullTaxPolicyThrowsNullPointerException() {
         InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
-                .withClientData(clientDataMock)
                 .build();
 
         assertDoesNotThrow(() -> bookKeeper.issuance(invoiceRequest, null));

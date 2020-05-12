@@ -2,9 +2,11 @@ package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 
+import static org.mockito.Mockito.mock;
+
 public class InvoiceRequestBuilder {
 
-    private InvoiceRequest invoiceRequest;
+    private InvoiceRequest invoiceRequest = new InvoiceRequest(mock(ClientData.class));
     private RequestItem requestItem;
 
     public InvoiceRequestBuilder withItemQuantity(int itemQuantity) {
@@ -17,11 +19,6 @@ public class InvoiceRequestBuilder {
 
     public InvoiceRequestBuilder withRequestItem (RequestItem requestItem) {
         this.requestItem = requestItem;
-        return this;
-    }
-
-    public InvoiceRequestBuilder withClientData(ClientData clientData) {
-        invoiceRequest = new InvoiceRequest(clientData);
         return this;
     }
 
