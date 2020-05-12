@@ -2,8 +2,10 @@ package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
@@ -16,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BookKeeperTest {
 
     @Mock
     private TaxPolicy taxPolicyMock;
 
-    @Mock
     private ClientData clientDataMock;
 
     private BookKeeper bookKeeper;
@@ -42,7 +44,6 @@ public class BookKeeperTest {
                 .withProductData(productData)
                 .build();
 
-        taxPolicyMock = mock(TaxPolicy.class);
         when(taxPolicyMock.calculateTax(ProductType.STANDARD, Money.ZERO)).thenReturn(new Tax(Money.ZERO, ""));
     }
 
