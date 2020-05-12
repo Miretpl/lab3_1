@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BookKeeperTest {
@@ -69,6 +69,16 @@ public class BookKeeperTest {
     }
 
     // behaviour tests
+    @Test public void checkArgumentsOfCalculateTaxInvoke() {
+        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
+                .withRequestItem(requestItem)
+                .withItemQuantity(1)
+                .build();
+
+        bookKeeper.issuance(invoiceRequest, taxPolicyMock);
+        verify(taxPolicyMock, times(1)).calculateTax(ProductType.STANDARD, Money.ZERO);
+    }
+
     @Test public void invoiceRequestWithTwoItemsInvokesCalcualteTaxTwoTimes() {
         InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
                 .withRequestItem(requestItem)
@@ -84,8 +94,7 @@ public class BookKeeperTest {
     }
 
     @Test public void issuanceInvokeWithNullTaxPolicyThrowsNullPointerException() {
-        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
-                .build();
+        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder().build();
 
         assertDoesNotThrow(() -> bookKeeper.issuance(invoiceRequest, null));
     }
