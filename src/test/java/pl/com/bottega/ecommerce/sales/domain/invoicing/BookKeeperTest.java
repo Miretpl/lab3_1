@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
@@ -15,7 +14,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -56,21 +54,18 @@ public class BookKeeperTest {
     }
 
     @Test public void invoiceRequestWithNoItemReturnInvoiceWithNoPosition() {
-        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
-                .build();
+        InvoiceRequest invoiceRequest = new InvoiceRequestBuilder().build();
 
         assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(0));
     }
 
-    @Test public void invoiceRequestWithFiveItemReturnInvoiceWithFivePosition() {
-        int itemsQuantity = 5;
-
+    @Test public void invoiceRequestWithTwoItemReturnInvoiceWithTwoPosition() {
         InvoiceRequest invoiceRequest = new InvoiceRequestBuilder()
                 .withRequestItem(requestItem)
-                .withItemQuantity(itemsQuantity)
+                .withItemQuantity(5)
                 .build();
 
-        assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(itemsQuantity));
+        assertThat(bookKeeper.issuance(invoiceRequest, taxPolicyMock).getItems().size(), is(5));
     }
 
     // behaviour tests

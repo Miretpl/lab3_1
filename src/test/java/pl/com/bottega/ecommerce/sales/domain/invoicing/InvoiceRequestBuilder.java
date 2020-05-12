@@ -6,14 +6,12 @@ import static org.mockito.Mockito.mock;
 
 public class InvoiceRequestBuilder {
 
-    private InvoiceRequest invoiceRequest = new InvoiceRequest(mock(ClientData.class));
+    private final InvoiceRequest invoiceRequest = new InvoiceRequest(mock(ClientData.class));
     private RequestItem requestItem;
+    private int itemQuantity = 0;
 
     public InvoiceRequestBuilder withItemQuantity(int itemQuantity) {
-        for (int i = 0; i < itemQuantity; i++) {
-            invoiceRequest.add(requestItem);
-        }
-
+        this.itemQuantity = itemQuantity;
         return this;
     }
 
@@ -23,7 +21,10 @@ public class InvoiceRequestBuilder {
     }
 
     public InvoiceRequest build() {
+        for (int i = 0; i < itemQuantity; i++) {
+            invoiceRequest.add(requestItem);
+        }
+
         return invoiceRequest;
     }
-
 }
